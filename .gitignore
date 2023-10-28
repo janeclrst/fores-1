@@ -1,0 +1,7 @@
+.vscode/
+.trunk/
+.pytest_cache/
+.DS_store
+venv/
+datasets/
+model_checkpoints/
