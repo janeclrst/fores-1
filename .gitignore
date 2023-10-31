@@ -3,5 +3,5 @@
 .pytest_cache/
 .DS_store
 venv/
-datasets/
+datasets/fitzpatrick/fairface/*
 model_checkpoints/
