@@ -17,6 +17,15 @@ Note: Use the following folder structure to run the code.
       - train.csv
     - foundation/
       - maybelline.csv
+    - gan/
+      - data/
+        - portions/
+          - 1.csv
+          - ....csv
+        - gan.csv
+        - labeled_gan.csv
+      - images/
+        - ....jpeg
   - model_checkpoints/
     - sam_vit_h_4b8939.pth
     - sam_vit_l_0b3195.pth
