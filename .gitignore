@@ -4,5 +4,5 @@
 .DS_store
 venv/
 datasets/fitzpatrick/fairface/*
-datasets/gan/*
+datasets/gan/images/*
 model_checkpoints/
