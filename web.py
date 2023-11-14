@@ -40,3 +40,9 @@ if uploaded_file is not None:
     zoom_image = zoom_center(opencv_img, 5)
     hsv_mean = extract_hsv_mean(zoom_image)
     hsv_mean = hsv_mean.reshape(1, -1)
+
+    new_data = np.array(hsv_mean)
+    v_value = new_data[0][2]
+    st.text(f"V value: {v_value}")
+    prediction = model.predict(v_value.reshape(1, -1))
+    st.text(f"Prediction: {prediction[0]}")
