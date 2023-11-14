@@ -30,13 +30,14 @@ def extract_hsv_mean(img):
     return np.array([h, s, v])
 
 
-imported_img = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
-if imported_img is not None:
+if uploaded_file is not None:
     # display the image
-    # st.image(imported_img, caption="Uploaded Image", use_column_width=True)
+    # st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 
     # zoom the imported image
-    img = cv2.imread(imported_img.name)
-    img = zoom_center(img, 2)
-    st.image(img, caption="Zoomed Image", use_column_width=True)
+    # img = cv2.imread(uploaded_file.name)
+    # img = zoom_center(img, 2)
+    st.text(uploaded_file)
+    st.image(uploaded_file, caption="Zoomed Image", use_column_width=True)
