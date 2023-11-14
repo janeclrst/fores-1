@@ -1,10 +1,11 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 import cv2
+from pandas import read_pickle
+from io import StringIO
 
 # read the pickle file
-model = pd.read_pickle("models/knn_gan_vmean.pkl")
+model = read_pickle("models/knn_gan_vmean.pkl")
 
 
 def zoom_center(img, zoom_factor=2):
@@ -33,11 +34,9 @@ def extract_hsv_mean(img):
 uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
-    # display the image
-    # st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    opencv_img = cv2.imdecode(file_bytes, 1)
 
-    # zoom the imported image
-    # img = cv2.imread(uploaded_file.name)
-    # img = zoom_center(img, 2)
-    st.text(uploaded_file)
-    st.image(uploaded_file, caption="Zoomed Image", use_column_width=True)
+    zoom_image = zoom_center(opencv_img, 5)
+    hsv_mean = extract_hsv_mean(zoom_image)
+    hsv_mean = hsv_mean.reshape(1, -1)
