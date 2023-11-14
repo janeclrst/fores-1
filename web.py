@@ -31,6 +31,10 @@ def extract_hsv_mean(img):
     return np.array([h, s, v])
 
 
+def convert_to_percentage(value):
+    return value / 255
+
+
 uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
@@ -46,3 +50,5 @@ if uploaded_file is not None:
     st.text(f"V value: {v_value}")
     prediction = model.predict(v_value.reshape(1, -1))
     st.text(f"Prediction: {prediction[0]}")
+    v_percentage = convert_to_percentage(v_value)
+    st.text(f"V percentage: {v_percentage}")
