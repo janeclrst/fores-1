@@ -5,7 +5,7 @@ import pandas as pd
 
 # read the pickle file
 model = pd.read_pickle("models/knn_gan_vmean.pkl")
-df = pd.read_csv("datasets/foundation/maybelline_new.csv")
+df = pd.read_csv("datasets/foundation/shades.csv")
 
 
 def zoom_center(img, zoom_factor=2):
