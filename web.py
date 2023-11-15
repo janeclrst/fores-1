@@ -40,36 +40,37 @@ st.title("Fores (Foundation Recommender System)")
 uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
+    col1, col2 = st.columns(2)
+
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     opencv_img = cv2.imdecode(file_bytes, 1)
 
     zoom_ratio = st.slider("Zoom ratio", min_value=1, max_value=10, step=1)
+    
+    with col1:
+        zoom_image = zoom_center(opencv_img, zoom_factor=zoom_ratio)
+        hsv_mean = extract_hsv_mean(zoom_image).reshape(1, -1)
 
-    zoom_image = zoom_center(opencv_img, zoom_factor=zoom_ratio)
-    hsv_mean = extract_hsv_mean(zoom_image).reshape(1, -1)
+        new_data = np.array(hsv_mean)
+        v_value = new_data[0][2]
+        prediction = model.predict(v_value.reshape(1, -1))
+        st.text(f"Phototype prediction: {prediction[0]}")
 
-    new_data = np.array(hsv_mean)
-    v_value = new_data[0][2]
+        v_percentage = convert_to_percentage(v_value).round(2)
 
-    prediction = model.predict(v_value.reshape(1, -1))
-    st.text(f"Phototype prediction: {prediction[0]}")
+        v_data = df.get("V")
+        calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
+        nearest_value = np.array([np.min(calc)])
 
-    v_percentage = convert_to_percentage(v_value).round(2)
+        # show the product using st.text
+        product_index = np.array(np.where(calc == nearest_value)[1][0])
+        st.text(f"Product: {df['product'][product_index]}")
 
-    v_data = df.get("V")
-    calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
-    nearest_value = np.array([np.min(calc)])
+        hex_code = df["hex"][product_index]
+        st.text(f"Hex: #{df['hex'][product_index]}")
 
-    # show the product using st.text
-    product_index = np.array(np.where(calc == nearest_value)[1][0])
-    st.text(f"Product: {df['product'][product_index]}")
+        html_code = f'<div style="width: 50px; height: 50px; background-color: #{hex_code};"></div>'
+        st.markdown(html_code, unsafe_allow_html=True)
 
-    hex_code = df["hex"][product_index]
-    st.text(f"Hex: #{df['hex'][product_index]}")
-
-    html_code = (
-        f'<div style="width: 50px; height: 50px; background-color: #{hex_code};"></div>'
-    )
-    st.markdown(html_code, unsafe_allow_html=True)
-
-    st.image(zoom_image, channels="BGR", width=300)
+    with col2:
+        st.image(zoom_image, channels="BGR", width=300)
