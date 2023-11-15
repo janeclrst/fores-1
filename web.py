@@ -35,6 +35,8 @@ def convert_to_percentage(value):
     return value / 255
 
 
+st.title("Fores (Foundation Recommender System)")
+
 uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
