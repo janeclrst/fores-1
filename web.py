@@ -93,7 +93,6 @@ if uploaded_file is not None:
         link = df["url"][product_index]
         link = link.split(",")[0]
         st.markdown(f"Link to [Product]({link})")
-        st.text(f"Link: {link}")
 
         url = df["imgSrc"][product_index]
         img = fetch_image(url)
