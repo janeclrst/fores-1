@@ -41,7 +41,7 @@ if uploaded_file is not None:
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     opencv_img = cv2.imdecode(file_bytes, 1)
 
-    zoom_ratio = st.slider("Zoom ratio", min_value=0, max_value=10, step=1)
+    zoom_ratio = st.slider("Zoom ratio", min_value=1, max_value=10, step=1)
 
     zoom_image = zoom_center(opencv_img, zoom_factor=zoom_ratio)
     hsv_mean = extract_hsv_mean(zoom_image).reshape(1, -1)
