@@ -2,10 +2,26 @@ import streamlit as st
 import numpy as np
 import cv2
 import pandas as pd
+import requests
+from PIL import Image
+from io import BytesIO
 
 # read the pickle file
 model = pd.read_pickle("models/knn_gan_vmean.pkl")
-df = pd.read_csv("datasets/foundation/shades.csv")
+df = pd.read_csv("datasets/foundation/allShades_new.csv")
+
+
+def fetch_image(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+
+        img = Image.open(BytesIO(response.content))
+
+        return img
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
 
 def zoom_center(img, zoom_factor=2):
@@ -58,7 +74,7 @@ if uploaded_file is not None:
 
         v_percentage = convert_to_percentage(v_value).round(2)
 
-        v_data = df.get("V")
+        v_data = df.get("Value")
         calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
         nearest_value = np.array([np.min(calc)])
 
@@ -69,10 +85,17 @@ if uploaded_file is not None:
         st.text(f"Product: {df['product'][product_index]}")
 
         hex_code = df["hex"][product_index]
-        st.text(f"Hex: #{df['hex'][product_index]}")
+        st.text(f"Hex: {df['hex'][product_index]}")
 
-        html_code = f'<div style="width: 50px; height: 50px; background-color: #{hex_code};"></div>'
-        st.markdown(html_code, unsafe_allow_html=True)
+        desc = df["imgAlt"][product_index]
+        st.text(f"Description: {desc}")
+
+        url = df["imgSrc"][product_index]
+        img = fetch_image(url)
+        st.image(img, channels="BGR", width=60)
+
+        # html_code = f'<div style="width: 50px; height: 50px; background-color: {hex_code};"></div>'
+        # st.markdown(html_code, unsafe_allow_html=True)
 
     with col2:
         st.image(zoom_image, channels="BGR", width=300)
