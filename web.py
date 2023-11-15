@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import cv2
 import pandas as pd
-from io import StringIO
 
 # read the pickle file
 model = pd.read_pickle("models/knn_gan_vmean.pkl")
