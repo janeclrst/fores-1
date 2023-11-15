@@ -53,3 +53,10 @@ if uploaded_file is not None:
     st.text(f"Prediction: {prediction[0]}")
     v_percentage = convert_to_percentage(v_value).round(2)
     st.text(f"V percentage: {v_percentage}")
+    v_data = df.get("V")
+    calc = np.array([np.round(np.abs(v_data - v_percentage), 2)])
+    nearest_data = np.min(calc)
+    st.text(f"Nearest data: {nearest_data}")
+    # show the product using st.text
+    product_index = df.iloc[np.where(calc == nearest_data)[1][0], 0]
+    st.text(df["product"][product_index])
