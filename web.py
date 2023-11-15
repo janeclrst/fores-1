@@ -32,7 +32,7 @@ def extract_hsv_mean(img):
 
 
 def convert_to_percentage(value):
-    return value / 255
+    return value / 256
 
 
 uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
