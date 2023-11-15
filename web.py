@@ -71,3 +71,5 @@ if uploaded_file is not None:
         f'<div style="width: 50px; height: 50px; background-color: #{hex_code};"></div>'
     )
     st.markdown(html_code, unsafe_allow_html=True)
+
+    st.image(zoom_image, channels="BGR", width=300)
