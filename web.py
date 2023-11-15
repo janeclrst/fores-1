@@ -62,7 +62,9 @@ if uploaded_file is not None:
         calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
         nearest_value = np.array([np.min(calc)])
 
-        # show the product using st.text
+        brand = df["brand"][np.array(np.where(calc == nearest_value)[1][0])]
+        st.text(f"Brand: {brand}")
+
         product_index = np.array(np.where(calc == nearest_value)[1][0])
         st.text(f"Product: {df['product'][product_index]}")
 
