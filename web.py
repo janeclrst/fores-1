@@ -48,15 +48,24 @@ if uploaded_file is not None:
 
     new_data = np.array(hsv_mean)
     v_value = new_data[0][2]
-    st.text(f"V value: {v_value}")
+
     prediction = model.predict(v_value.reshape(1, -1))
-    st.text(f"Prediction: {prediction[0]}")
+    st.text(f"Phototype prediction: {prediction[0]}")
+
     v_percentage = convert_to_percentage(v_value).round(2)
-    st.text(f"V percentage: {v_percentage}")
+
     v_data = df.get("V")
     calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
     nearest_value = np.array([np.min(calc)])
-    st.text(f"Nearest value: {nearest_value}")
+
     # show the product using st.text
     product_index = np.array(np.where(calc == nearest_value)[1][0])
-    st.text(df["product"][product_index])
+    st.text(f"Product: {df['product'][product_index]}")
+
+    hex_code = df["hex"][product_index]
+    st.text(f"Hex: #{df['hex'][product_index]}")
+
+    html_code = (
+        f'<div style="width: 50px; height: 50px; background-color: #{hex_code};"></div>'
+    )
+    st.markdown(html_code, unsafe_allow_html=True)
