@@ -90,12 +90,14 @@ if uploaded_file is not None:
         desc = df["imgAlt"][product_index]
         st.text(f"Description: {desc}")
 
+        link = df["url"][product_index]
+        link = link.split(",")[0]
+        st.markdown(f"Link to [Product]({link})")
+        st.text(f"Link: {link}")
+
         url = df["imgSrc"][product_index]
         img = fetch_image(url)
         st.image(img, channels="BGR", width=60)
-
-        # html_code = f'<div style="width: 50px; height: 50px; background-color: {hex_code};"></div>'
-        # st.markdown(html_code, unsafe_allow_html=True)
 
     with col2:
         st.image(zoom_image, channels="BGR", width=300)
