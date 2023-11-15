@@ -1,11 +1,12 @@
 import streamlit as st
 import numpy as np
 import cv2
-from pandas import read_pickle
+import pandas as pd
 from io import StringIO
 
 # read the pickle file
-model = read_pickle("models/knn_gan_vmean.pkl")
+model = pd.read_pickle("models/knn_gan_vmean.pkl")
+df = pd.read_csv("datasets/foundation/maybelline_new.csv")
 
 
 def zoom_center(img, zoom_factor=2):
@@ -50,5 +51,5 @@ if uploaded_file is not None:
     st.text(f"V value: {v_value}")
     prediction = model.predict(v_value.reshape(1, -1))
     st.text(f"Prediction: {prediction[0]}")
-    v_percentage = convert_to_percentage(v_value)
+    v_percentage = convert_to_percentage(v_value).round(2)
     st.text(f"V percentage: {v_percentage}")
