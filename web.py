@@ -43,8 +43,7 @@ if uploaded_file is not None:
     opencv_img = cv2.imdecode(file_bytes, 1)
 
     zoom_image = zoom_center(opencv_img, 5)
-    hsv_mean = extract_hsv_mean(zoom_image)
-    hsv_mean = hsv_mean.reshape(1, -1)
+    hsv_mean = extract_hsv_mean(zoom_image).reshape(1, -1)
 
     new_data = np.array(hsv_mean)
     v_value = new_data[0][2]
