@@ -53,7 +53,7 @@ if uploaded_file is not None:
     v_percentage = convert_to_percentage(v_value).round(2)
     st.text(f"V percentage: {v_percentage}")
     v_data = df.get("V")
-    calc = np.array([np.round(np.abs(v_data - v_percentage), 2)])
+    calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
     nearest_data = np.min(calc)
     st.text(f"Nearest data: {nearest_data}")
     # show the product using st.text
