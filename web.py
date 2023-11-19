@@ -53,13 +53,17 @@ def convert_to_percentage(value):
 
 st.title("Fores (Foundation Recommender System)")
 
-uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+# uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+cam = st.camera_input(label="Take a photo")
 
-if uploaded_file is not None:
+# if uploaded_file is not None:
+if cam is not None:
     col1, col2 = st.columns(2)
 
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    opencv_img = cv2.imdecode(file_bytes, 1)
+    # file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    file_bytes = cam.getvalue()
+    # opencv_img = cv2.imdecode(file_bytes, 1)
+    opencv_img = cv2.imdecode(np.frombuffer(file_bytes, np.uint8), cv2.IMREAD_COLOR)
 
     zoom_ratio = st.slider("Zoom ratio", min_value=1, max_value=10, step=1)
 
