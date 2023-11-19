@@ -65,7 +65,7 @@ if cam is not None:
     # opencv_img = cv2.imdecode(file_bytes, 1)
     opencv_img = cv2.imdecode(np.frombuffer(file_bytes, np.uint8), cv2.IMREAD_COLOR)
 
-    zoom_ratio = st.slider("Zoom ratio", min_value=1, max_value=10, step=1)
+    # zoom_ratio = st.slider("Zoom ratio", min_value=1, max_value=10, step=1)
 
     with col1:
         zoom_image = zoom_center(opencv_img, zoom_factor=zoom_ratio)
