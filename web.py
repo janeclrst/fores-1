@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 from PIL import Image
 from io import BytesIO
+from streamlit_cropper import st_cropper
 
 # read the pickle file
 model = pd.read_pickle("models/knn_gan_vmean.pkl")
@@ -66,10 +67,11 @@ if cam is not None:
     opencv_img = cv2.imdecode(np.frombuffer(file_bytes, np.uint8), cv2.IMREAD_COLOR)
 
     # zoom_ratio = st.slider("Zoom ratio", min_value=1, max_value=10, step=1)
+    cropped_image = st_cropper(opencv_img, realtime_update=True, box_color=(255, 0, 0))
 
     with col1:
-        zoom_image = zoom_center(opencv_img, zoom_factor=zoom_ratio)
-        hsv_mean = extract_hsv_mean(zoom_image).reshape(1, -1)
+        # zoom_image = zoom_center(opencv_img, zoom_factor=zoom_ratio)
+        hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
         new_data = np.array(hsv_mean)
         v_value = new_data[0][2]
