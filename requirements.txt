@@ -12,6 +12,7 @@ contourpy==1.2.0
 cycler==0.12.1
 debugpy==1.8.0
 decorator==5.1.1
+docopt==0.6.2
 executing==2.0.1
 fonttools==4.44.0
 gitdb==4.0.11
@@ -64,6 +65,7 @@ six==1.16.0
 smmap==5.0.1
 stack-data==0.6.3
 streamlit==1.28.2
+streamlit-cropper==0.2.2
 tenacity==8.2.3
 threadpoolctl==3.2.0
 toml==0.10.2
@@ -76,4 +78,5 @@ tzlocal==5.2
 urllib3==2.1.0
 validators==0.22.0
 wcwidth==0.2.10
+yarg==0.1.9
 zipp==3.17.0
