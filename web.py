@@ -55,6 +55,7 @@ def convert_to_percentage(value):
 
 
 st.title("Fores (Foundation Recommender System)")
+st.subheader("Upload a photo of your skin to get a foundation recommendation!")
 
 cam = st.sidebar.camera_input(label="Take a photo")
 
@@ -74,8 +75,10 @@ aspect_dict = {
 }
 aspect_ratio = aspect_dict[aspect_choice]
 
+st.sidebar.markdown(
+    "Made by [Janice Claresta Lingga](https://github.com/janeclrst) 🐈",
+)
 
-# if uploaded_file is not None:
 if cam is not None:
     col1, col2 = st.columns(2)
 
