@@ -6,7 +6,8 @@ import requests
 from PIL import Image
 from io import BytesIO
 from streamlit_cropper import st_cropper
-st.set_option('deprecation.showfileUploaderEncoding', False)
+
+st.set_option("deprecation.showfileUploaderEncoding", False)
 
 # read the pickle file
 model = pd.read_pickle("models/knn_gan_vmean.pkl")
@@ -55,44 +56,47 @@ def convert_to_percentage(value):
 
 st.title("Fores (Foundation Recommender System)")
 
-# uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
-cam = st.camera_input(label="Take a photo")
+cam = st.sidebar.camera_input(label="Take a photo")
 
-#realtime_update = st.sidebar.checkbox(label="Update in Real Time", value=True)
-#box_color = st.sidebar.color_picker(label="Box Color", value='#0000FF')
+realtime_update = st.sidebar.checkbox(label="Update in Real Time", value=True)
+box_color = st.sidebar.color_picker(label="Box Color", value="#0000FF")
+aspect_choice = st.sidebar.radio(
+    label="Aspect Ratio",
+    options=["1:1", "16:9", "4:3", "2:3", "Free"],
+    index=0,
+)
+aspect_dict = {
+    "1:1": (1, 1),
+    "16:9": (16, 9),
+    "4:3": (4, 3),
+    "2:3": (2, 3),
+    "Free": None,
+}
+aspect_ratio = aspect_dict[aspect_choice]
 
-if cam:
-    img = Image.open(cam)
-   # if not realtime_update:
-      #  st.write("Double click to save crop")
-    # Get a cropped image from the frontend
-    cropped_image = st_cropper(img, key="cropper_1")
-    # Manipulate cropped image at will
-    st.write("Preview")
-    _ = cropped_image.thumbnail((300,300))
-    st.image(cropped_image)
 
 # if uploaded_file is not None:
 if cam is not None:
     col1, col2 = st.columns(2)
-    
-    # file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-   # file_bytes = np.asarray(bytearray(cam.read()), dtype=np.uint8)
-    #file_bytes = cam.getvalue()
-  
-    #opencv_img = cv2.imdecode(file_bytes, 1)
-    #opencv_img = cv2.imdecode(np.frombuffer(file_bytes, np.uint8), cv2.IMREAD_COLOR)
-    
-    # zoom_ratio = st.slider("Zoom ratio", min_value=1, max_value=10, step=1)
-    #cropped_image = st_cropper(opencv_img, realtime_update=True, box_color=(255, 0, 0), aspect_ratio=(1, 1))
-    cropped_image = st_cropper(img, key="cropper")
-    
-    img = np.array(cropped_image)
-
-    #cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)
 
     with col1:
-        # zoom_image = zoom_center(opencv_img, zoom_factor=zoom_ratio)
+        img = Image.open(cam)
+
+        if not realtime_update:
+            st.write("Double tap on the image to save crop")
+
+        cropped_image = st_cropper(
+            img,
+            key="cropper",
+            realtime_update=realtime_update,
+            box_color=box_color,
+            aspect_ratio=aspect_ratio,
+            stroke_width=4,
+        )
+
+    with col2:
+        st.image(cropped_image, use_column_width=True)
+        cropped_image = np.array(cropped_image)
         hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
         new_data = np.array(hsv_mean)
@@ -125,10 +129,3 @@ if cam is not None:
         url = df["imgSrc"][product_index]
         img = fetch_image(url)
         st.image(img, channels="BGR", width=60)
-
-    with col2:
-        #st.image(zoom_image, channels="BGR", width=300)
-        #st.image(cropped_image, channels="BGR", width=300)
-        # Konversi gambar ke format yang bisa ditampilkan oleh OpenCV
-        img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-        st.image(img_bgr, channels="BGR", width=300)
