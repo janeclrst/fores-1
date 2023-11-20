@@ -69,7 +69,7 @@ if cam:
     cropped_image = st_cropper(img, key="cropper_1")
     # Manipulate cropped image at will
     st.write("Preview")
-    _ = cropped_image.thumbnail((150,150))
+    _ = cropped_image.thumbnail((300,300))
     st.image(cropped_image)
 
 # if uploaded_file is not None:
