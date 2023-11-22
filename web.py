@@ -17,6 +17,10 @@ df = pd.read_csv("datasets/foundation/allShades_new.csv")
 format_file = ["png", "jpg", "jpeg"]
 
 
+def query_selected_brand(brand):
+    return df[df["brand"] == brand]
+
+
 def process_image(
     img_src,
     realtime_update=True,
@@ -27,6 +31,8 @@ def process_image(
     stroke_color="#FFFFFF",
 ):
     col_left, col_right = st.columns(2)
+
+    filtered_df = query_selected_brand(selected_brand)
 
     with col_left:
         img = Image.open(img_src)
@@ -68,11 +74,11 @@ def process_image(
 
         v_percentage = convert_to_percentage(v_value).round(2)
 
-        v_data = df.get("Value")
+        v_data = filtered_df.get("Value")
         calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
         nearest_value = np.array([np.min(calc)])
 
-        brand = df["brand"][np.array(np.where(calc == nearest_value)[1][0])]
+        brand = filtered_df["brand"][np.array(np.where(calc == nearest_value)[1][0])]
         st.text(f"Brand: {brand}")
 
         product_index = np.array(np.where(calc == nearest_value)[1][0])
@@ -131,10 +137,6 @@ def extract_hsv_mean(img):
 
 def convert_to_percentage(value):
     return value / 255
-
-
-def query_selected_brand(brand):
-    return df[df["brand"] == brand]
 
 
 st.title("Fores (Foundation Recommender System)")
