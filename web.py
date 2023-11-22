@@ -25,7 +25,7 @@ def process_image(img_src, realtime_update, box_color, aspect_ratio):
         if not realtime_update:
             st.write("Double tap on the image to save crop")
 
-        current_time = time.strftime("%b %d, %Y %H:%M")
+        current_time = time.strftime("%b %d, %Y %H:%M:%S")
         st.write(f"Photo taken: {current_time}")
 
         cropped_image = st_cropper(
