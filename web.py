@@ -138,7 +138,7 @@ else:
         type=format_file,
     )
 
-with st.sidebar.expander("Utilities"):
+with st.sidebar.expander("Crop Utilities"):
     realtime_update = st.checkbox(
         label="Update in Real Time",
         value=True,
