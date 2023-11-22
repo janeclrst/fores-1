@@ -105,59 +105,60 @@ st.sidebar.markdown(
     "Made by [Janice Claresta Lingga](https://github.com/janeclrst) 🐈",
 )
 
-if cam is not None:
-    col1, col2 = st.columns(2)
+if options == "Camera":
+    if cam is not None:
+        col1, col2 = st.columns(2)
 
-    with col1:
-        img = Image.open(cam)
+        with col1:
+            img = Image.open(cam)
 
-        if not realtime_update:
-            st.write("Double tap on the image to save crop")
+            if not realtime_update:
+                st.write("Double tap on the image to save crop")
 
-        current_time = time.strftime("%b %d, %Y %H:%M")
-        st.write(f"Photo taken: {current_time}")
+            current_time = time.strftime("%b %d, %Y %H:%M")
+            st.write(f"Photo taken: {current_time}")
 
-        cropped_image = st_cropper(
-            img,
-            key="cropper",
-            realtime_update=realtime_update,
-            box_color=box_color,
-            aspect_ratio=aspect_ratio,
-            stroke_width=4,
-        )
+            cropped_image = st_cropper(
+                img,
+                key="cropper",
+                realtime_update=realtime_update,
+                box_color=box_color,
+                aspect_ratio=aspect_ratio,
+                stroke_width=4,
+            )
 
-    with col2:
-        st.image(cropped_image, use_column_width=True)
-        cropped_image = np.array(cropped_image)
-        hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
+        with col2:
+            st.image(cropped_image, use_column_width=True)
+            cropped_image = np.array(cropped_image)
+            hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
-        new_data = np.array(hsv_mean)
-        v_value = new_data[0][2]
-        prediction = model.predict(v_value.reshape(1, -1))
-        st.text(f"Phototype prediction: {prediction[0]}")
+            new_data = np.array(hsv_mean)
+            v_value = new_data[0][2]
+            prediction = model.predict(v_value.reshape(1, -1))
+            st.text(f"Phototype prediction: {prediction[0]}")
 
-        v_percentage = convert_to_percentage(v_value).round(2)
+            v_percentage = convert_to_percentage(v_value).round(2)
 
-        v_data = df.get("Value")
-        calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
-        nearest_value = np.array([np.min(calc)])
+            v_data = df.get("Value")
+            calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
+            nearest_value = np.array([np.min(calc)])
 
-        brand = df["brand"][np.array(np.where(calc == nearest_value)[1][0])]
-        st.text(f"Brand: {brand}")
+            brand = df["brand"][np.array(np.where(calc == nearest_value)[1][0])]
+            st.text(f"Brand: {brand}")
 
-        product_index = np.array(np.where(calc == nearest_value)[1][0])
-        st.text(f"Product: {df['product'][product_index]}")
+            product_index = np.array(np.where(calc == nearest_value)[1][0])
+            st.text(f"Product: {df['product'][product_index]}")
 
-        hex_code = df["hex"][product_index]
-        st.text(f"Hex: {df['hex'][product_index]}")
+            hex_code = df["hex"][product_index]
+            st.text(f"Hex: {df['hex'][product_index]}")
 
-        desc = df["imgAlt"][product_index]
-        st.text(f"Description: {desc}")
+            desc = df["imgAlt"][product_index]
+            st.text(f"Description: {desc}")
 
-        link = df["url"][product_index]
-        link = link.split(",")[0]
-        st.markdown(f"Link to [Product]({link})")
+            link = df["url"][product_index]
+            link = link.split(",")[0]
+            st.markdown(f"Link to [Product]({link})")
 
-        url = df["imgSrc"][product_index]
-        img = fetch_image(url)
-        st.image(img, channels="BGR", width=60)
+            url = df["imgSrc"][product_index]
+            img = fetch_image(url)
+            st.image(img, channels="BGR", width=60)
