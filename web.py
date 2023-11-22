@@ -147,6 +147,7 @@ options = st.sidebar.radio(
     index=0,
 )
 
+
 if options == "Camera":
     mode = st.sidebar.camera_input(label="Take a photo")
 else:
@@ -154,6 +155,17 @@ else:
         label="Upload your photo!",
         type=format_file,
     )
+
+unique_brands = df["brand"].unique().tolist()
+unique_brands.insert(0, "All brand")
+
+selected_brand = st.selectbox(
+    label="Select Brand",
+    options=unique_brands,
+    index=0,
+    key="Brand Selectbox",
+    disabled=mode is None,
+)
 
 realtime_update = st.sidebar.checkbox(
     label="Update in Real Time",
