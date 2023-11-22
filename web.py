@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import pandas as pd
 import requests
+import time
 from PIL import Image
 from io import BytesIO
 from streamlit_cropper import st_cropper
@@ -54,6 +55,10 @@ def convert_to_percentage(value):
     return value / 255
 
 
+def query_selected_brand(brand):
+    return df[df["brand"] == brand]
+
+
 st.title("Fores (Foundation Recommender System)")
 st.subheader("Upload a photo of your skin to get a foundation recommendation!")
 
@@ -87,6 +92,9 @@ if cam is not None:
 
         if not realtime_update:
             st.write("Double tap on the image to save crop")
+
+        current_time = time.strftime("%b %d, %Y %H:%M")
+        st.write(f"Photo taken: {current_time}")
 
         cropped_image = st_cropper(
             img,
