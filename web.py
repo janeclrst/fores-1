@@ -7,6 +7,7 @@ import time
 from PIL import Image
 from io import BytesIO
 from streamlit_cropper import st_cropper
+from streamlit_drawable_canvas import st_canvas
 
 st.set_option("deprecation.showfileUploaderEncoding", False)
 
@@ -38,6 +39,7 @@ def process_image(img_src, realtime_update, box_color, aspect_ratio):
         st.markdown(f"Photo taken: _{current_time}_")
 
     with col_right:
+        st_canvas(background_image=img, key="canvas")
         st.image(img_src, use_column_width=True)
         cropped_image = np.array(cropped_image)
         hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
