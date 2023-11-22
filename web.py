@@ -64,21 +64,28 @@ st.subheader("Upload a photo of your skin to get a foundation recommendation!")
 
 cam = st.sidebar.camera_input(label="Take a photo")
 
-realtime_update = st.sidebar.checkbox(label="Update in Real Time", value=True)
-box_color = st.sidebar.color_picker(label="Box Color", value="#0000FF")
-aspect_choice = st.sidebar.radio(
-    label="Aspect Ratio",
-    options=["1:1", "16:9", "4:3", "2:3", "Free"],
-    index=0,
-)
-aspect_dict = {
-    "1:1": (1, 1),
-    "16:9": (16, 9),
-    "4:3": (4, 3),
-    "2:3": (2, 3),
-    "Free": None,
-}
-aspect_ratio = aspect_dict[aspect_choice]
+with st.sidebar.expander("Utilities"):
+    realtime_update = st.checkbox(
+        label="Update in Real Time",
+        value=True,
+    )
+    box_color = st.color_picker(
+        label="Box Color",
+        value="#0000FF",
+    )
+    aspect_choice = st.radio(
+        label="Aspect Ratio",
+        options=["1:1", "16:9", "4:3", "2:3", "Free"],
+        index=0,
+    )
+    aspect_dict = {
+        "1:1": (1, 1),
+        "16:9": (16, 9),
+        "4:3": (4, 3),
+        "2:3": (2, 3),
+        "Free": None,
+    }
+    aspect_ratio = aspect_dict[aspect_choice]
 
 st.sidebar.markdown(
     "Made by [Janice Claresta Lingga](https://github.com/janeclrst) 🐈",
