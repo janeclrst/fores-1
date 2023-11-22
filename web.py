@@ -165,6 +165,7 @@ selected_brand = st.selectbox(
     index=0,
     key="Brand Selectbox",
     disabled=mode is None,
+    help="Select a brand to filter the products",
 )
 
 realtime_update = st.sidebar.checkbox(
