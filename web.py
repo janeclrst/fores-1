@@ -18,10 +18,7 @@ format_file = ["png", "jpg", "jpeg"]
 
 
 def query_selected_brand(brand):
-    if brand == "All":
-        return df
-    else:
-        return df[df["brand"] == brand]
+    return df if brand == "All" else df[df["brand"] == brand]
 
 
 def process_image(
