@@ -60,7 +60,7 @@ def query_selected_brand(brand):
 
 
 st.title("Fores (Foundation Recommender System)")
-st.subheader("Upload a photo of your skin to get a foundation recommendation!")
+st.subheader("AI Powered Foundation Recommender System Using")
 
 cam = st.sidebar.camera_input(label="Take a photo")
 
