@@ -13,6 +13,7 @@ st.set_option("deprecation.showfileUploaderEncoding", False)
 # read the pickle file
 model = pd.read_pickle("models/knn_gan_vmean.pkl")
 df = pd.read_csv("datasets/foundation/allShades_new.csv")
+format_file = ["png", "jpg", "jpeg"]
 
 
 def fetch_image(url):
@@ -62,7 +63,20 @@ def query_selected_brand(brand):
 st.title("Fores (Foundation Recommender System)")
 st.subheader("AI Powered Foundation Recommender System Using")
 
-cam = st.sidebar.camera_input(label="Take a photo")
+options = st.sidebar.radio(
+    label="Mode",
+    horizontal=True,
+    options=["Camera", "Upload"],
+    index=0,
+)
+
+if options == "Camera":
+    cam = st.sidebar.camera_input(label="Take a photo")
+else:
+    uploaded_file = st.sidebar.file_uploader(
+        label="Upload your photo!",
+        type=format_file,
+    )
 
 with st.sidebar.expander("Utilities"):
     realtime_update = st.checkbox(
