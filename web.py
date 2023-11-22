@@ -17,7 +17,15 @@ df = pd.read_csv("datasets/foundation/allShades_new.csv")
 format_file = ["png", "jpg", "jpeg"]
 
 
-def process_image(img_src, realtime_update, box_color, aspect_ratio):
+def process_image(
+    img_src,
+    realtime_update=True,
+    box_color="#0000FF",
+    aspect_ratio="1:1",
+    drawing_mode="freedraw",
+    stroke_width=1,
+    stroke_color="#FFFFFF",
+):
     col_left, col_right = st.columns(2)
 
     with col_left:
@@ -39,8 +47,17 @@ def process_image(img_src, realtime_update, box_color, aspect_ratio):
         st.markdown(f"Photo taken: _{current_time}_")
 
     with col_right:
-        st_canvas(background_image=img, key="canvas")
-        st.image(img_src, use_column_width=True)
+        st_canvas(
+            background_image=img,
+            key="canvas",
+            update_streamlit=realtime_update,
+            drawing_mode=drawing_mode,
+            height=img.height,
+            width=img.width,
+            stroke_color=stroke_color,
+            stroke_width=stroke_width,
+        )
+        # st.image(img_src, use_column_width=True)
         cropped_image = np.array(cropped_image)
         hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
@@ -138,11 +155,12 @@ else:
         type=format_file,
     )
 
+realtime_update = st.sidebar.checkbox(
+    label="Update in Real Time",
+    value=True,
+)
+
 with st.sidebar.expander("Crop Utilities"):
-    realtime_update = st.checkbox(
-        label="Update in Real Time",
-        value=True,
-    )
     box_color = st.color_picker(
         label="Box Color",
         value="#0000FF",
@@ -161,11 +179,44 @@ with st.sidebar.expander("Crop Utilities"):
     }
     aspect_ratio = aspect_dict[aspect_choice]
 
+with st.sidebar.expander("Draw Utilities"):
+    stroke_width = st.slider(
+        label="Stroke Width",
+        min_value=1,
+        max_value=10,
+        value=1,
+        step=1,
+    )
+    stroke_color = st.color_picker(
+        label="Stroke Color",
+        value="#000000",
+    )
+    drawing_mode = st.selectbox(
+        label="Drawing Tool",
+        options=["freedraw", "line", "rect", "circle", "transform"],
+    )
+
 st.sidebar.markdown(
     "Made by [Janice Claresta Lingga](https://github.com/janeclrst) 🐈",
 )
 
 if options == "Camera" and mode is not None:
-    process_image(mode, realtime_update, box_color, aspect_ratio)
+    process_image(
+        img_src=mode,
+        realtime_update=realtime_update,
+        box_color=box_color,
+        aspect_ratio=aspect_ratio,
+        drawing_mode=drawing_mode,
+        stroke_width=stroke_width,
+        stroke_color=stroke_color,
+    )
 elif mode is not None:
-    process_image(mode, realtime_update, box_color, aspect_ratio)
+    process_image(
+        img_src=mode,
+        realtime_update=realtime_update,
+        box_color=box_color,
+        aspect_ratio=aspect_ratio,
+        drawing_mode=drawing_mode,
+        stroke_width=stroke_width,
+        stroke_color=stroke_color,
+    )
