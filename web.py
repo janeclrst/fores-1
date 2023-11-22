@@ -18,7 +18,10 @@ format_file = ["png", "jpg", "jpeg"]
 
 
 def query_selected_brand(brand):
-    return df[df["brand"] == brand]
+    if brand == "All":
+        return df
+    else:
+        return df[df["brand"] == brand]
 
 
 def process_image(
@@ -78,25 +81,32 @@ def process_image(
         calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
         nearest_value = np.array([np.min(calc)])
 
-        brand = filtered_df["brand"][np.array(np.where(calc == nearest_value)[1][0])]
-        st.text(f"Brand: {brand}")
+        indices = np.array(np.where(calc == nearest_value)[1])
 
-        product_index = np.array(np.where(calc == nearest_value)[1][0])
-        st.text(f"Product: {df['product'][product_index]}")
+        if indices.size > 0:
+            brand_index = indices[0]
+            brand = filtered_df["brand"].iloc[brand_index]
+            st.text(f"Brand: {brand}")
 
-        hex_code = df["hex"][product_index]
-        st.text(f"Hex: {hex_code}")
+            product_index = indices[0]
 
-        desc = df["imgAlt"][product_index]
-        st.text(f"Description: {desc}")
+            st.text(f"Product: {filtered_df['product'].iloc[product_index]}")
 
-        link = df["url"][product_index]
-        link = link.split(",")[0]
-        st.markdown(f"Link to [Product]({link})")
+            hex_code = filtered_df["hex"].iloc[product_index]
+            st.text(f"Hex: {hex_code}")
 
-        url = df["imgSrc"][product_index]
-        img = fetch_image(url)
-        st.image(img, channels="BGR", width=60)
+            desc = filtered_df["imgAlt"].iloc[product_index]
+            st.text(f"Description: {desc}")
+
+            link = filtered_df["url"].iloc[product_index]
+            link = link.split(",")[0]
+            st.markdown(f"Link to [Product]({link})")
+
+            url = filtered_df["imgSrc"].iloc[product_index]
+            img = fetch_image(url)
+            st.image(img, channels="BGR", width=60)
+        else:
+            st.text("Brand or product not found")
 
 
 def fetch_image(url):
