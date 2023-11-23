@@ -57,7 +57,7 @@ def process_image(
 
     with col_right:
         st_canvas(
-            background_image=img,
+            background_image=cropped_image,
             key="canvas",
             update_streamlit=realtime_update,
             drawing_mode=drawing_mode,
