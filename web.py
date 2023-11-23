@@ -3,9 +3,11 @@ import numpy as np
 import cv2
 import pandas as pd
 import requests
+import pytz
 import time
 from PIL import Image
 from io import BytesIO
+from datetime import datetime
 from streamlit_cropper import st_cropper
 from streamlit_drawable_canvas import st_canvas
 
@@ -49,7 +51,8 @@ def process_image(
             stroke_width=4,
         )
 
-        current_time = time.strftime("%b %d, %Y %H:%M:%S")
+        id_tz = pytz.timezone("Asia/Jakarta")
+        current_time = datetime.now(id_tz).strftime("%b %d, %Y %H:%M:%S")
         st.markdown(f"Photo taken: _{current_time}_")
 
     with col_right:
