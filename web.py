@@ -56,17 +56,17 @@ def process_image(
         st.markdown(f"Photo taken: _{current_time}_")
 
     with col_right:
-        st_canvas(
-            background_image=cropped_image,
-            key="canvas",
-            update_streamlit=realtime_update,
-            drawing_mode=drawing_mode,
-            height=img.height,
-            width=img.width,
-            stroke_color=stroke_color,
-            stroke_width=stroke_width,
-        )
-        # st.image(img_src, use_column_width=True)
+        # st_canvas(
+        #     background_image=cropped_image,
+        #     key="canvas",
+        #     update_streamlit=realtime_update,
+        #     drawing_mode=drawing_mode,
+        #     height=img.height,
+        #     width=img.width,
+        #     stroke_color=stroke_color,
+        #     stroke_width=stroke_width,
+        # )
+        st.image(img_src, use_column_width=True)
         cropped_image = np.array(cropped_image)
         hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
