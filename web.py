@@ -28,13 +28,13 @@ def process_image(
     realtime_update=True,
     box_color="#0000FF",
     aspect_ratio="1:1",
-    drawing_mode="freedraw",
-    stroke_width=1,
-    stroke_color="#FFFFFF",
+    # drawing_mode="freedraw",
+    # stroke_width=1,
+    # stroke_color="#FFFFFF",
 ):
     col_left, col_right = st.columns(2)
 
-    filtered_df = query_selected_brand(selected_brand)
+    # filtered_df = query_selected_brand(selected_brand)
 
     with col_left:
         img = Image.open(img_src)
@@ -77,7 +77,7 @@ def process_image(
 
         v_percentage = convert_to_percentage(v_value).round(2)
 
-        v_data = filtered_df.get("Value")
+        v_data = df.get("Value")
         calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
         nearest_value = np.array([np.min(calc)])
 
@@ -85,24 +85,24 @@ def process_image(
 
         if indices.size > 0:
             brand_index = indices[0]
-            brand = filtered_df["brand"].iloc[brand_index]
+            brand = df["brand"].iloc[brand_index]
             st.text(f"Brand: {brand}")
 
             product_index = indices[0]
 
-            st.text(f"Product: {filtered_df['product'].iloc[product_index]}")
+            st.text(f"Product: {df['product'].iloc[product_index]}")
 
-            hex_code = filtered_df["hex"].iloc[product_index]
+            hex_code = df["hex"].iloc[product_index]
             st.text(f"Hex: {hex_code}")
 
-            desc = filtered_df["imgAlt"].iloc[product_index]
+            desc = df["imgAlt"].iloc[product_index]
             st.text(f"Description: {desc}")
 
-            link = filtered_df["url"].iloc[product_index]
+            link = df["url"].iloc[product_index]
             link = link.split(",")[0]
             st.markdown(f"Link to [Product]({link})")
 
-            url = filtered_df["imgSrc"].iloc[product_index]
+            url = df["imgSrc"].iloc[product_index]
             img = fetch_image(url)
             st.image(img, channels="BGR", width=60)
         else:
@@ -171,14 +171,14 @@ else:
 unique_brands = df["brand"].unique().tolist()
 unique_brands.insert(0, "All brand")
 
-selected_brand = st.selectbox(
-    label="Select Brand",
-    options=unique_brands,
-    index=0,
-    key="Brand Selectbox",
-    disabled=mode is None,
-    help="Select a brand to filter the products",
-)
+# selected_brand = st.selectbox(
+#     label="Select Brand",
+#     options=unique_brands,
+#     index=0,
+#     key="Brand Selectbox",
+#     disabled=mode is None,
+#     help="Select a brand to filter the products",
+# )
 
 realtime_update = st.sidebar.checkbox(
     label="Update in Real Time",
@@ -204,22 +204,22 @@ with st.sidebar.expander("Crop Utilities"):
     }
     aspect_ratio = aspect_dict[aspect_choice]
 
-with st.sidebar.expander("Draw Utilities"):
-    stroke_width = st.slider(
-        label="Stroke Width",
-        min_value=1,
-        max_value=10,
-        value=1,
-        step=1,
-    )
-    stroke_color = st.color_picker(
-        label="Stroke Color",
-        value="#000000",
-    )
-    drawing_mode = st.selectbox(
-        label="Drawing Tool",
-        options=["freedraw", "line", "rect", "circle", "transform"],
-    )
+# with st.sidebar.expander("Draw Utilities"):
+#     stroke_width = st.slider(
+#         label="Stroke Width",
+#         min_value=1,
+#         max_value=10,
+#         value=1,
+#         step=1,
+#     )
+#     stroke_color = st.color_picker(
+#         label="Stroke Color",
+#         value="#000000",
+#     )
+#     drawing_mode = st.selectbox(
+#         label="Drawing Tool",
+#         options=["freedraw", "line", "rect", "circle", "transform"],
+#     )
 
 st.sidebar.markdown(
     "Made by [Janice Claresta Lingga](https://github.com/janeclrst) 🐈",
@@ -231,9 +231,9 @@ if options == "Camera" and mode is not None:
         realtime_update=realtime_update,
         box_color=box_color,
         aspect_ratio=aspect_ratio,
-        drawing_mode=drawing_mode,
-        stroke_width=stroke_width,
-        stroke_color=stroke_color,
+        # drawing_mode=drawing_mode,
+        # stroke_width=stroke_width,
+        # stroke_color=stroke_color,
     )
 elif mode is not None:
     process_image(
@@ -241,7 +241,7 @@ elif mode is not None:
         realtime_update=realtime_update,
         box_color=box_color,
         aspect_ratio=aspect_ratio,
-        drawing_mode=drawing_mode,
-        stroke_width=stroke_width,
-        stroke_color=stroke_color,
+        # drawing_mode=drawing_mode,
+        # stroke_width=stroke_width,
+        # stroke_color=stroke_color,
     )
