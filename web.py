@@ -14,8 +14,8 @@ from streamlit_drawable_canvas import st_canvas
 st.set_option("deprecation.showfileUploaderEncoding", False)
 
 # read the pickle file
-model = pd.read_pickle("models/knn_gan_vmean.pkl")
-df = pd.read_csv("datasets/foundation/allShades_new.csv")
+model = pd.read_pickle("models/knn_fitzpatrick_vmean.pkl")
+df = pd.read_csv("datasets/foundation/maybelline_new.csv")
 format_file = ["png", "jpg", "jpeg"]
 
 
