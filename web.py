@@ -77,36 +77,36 @@ def process_image(
 
         v_percentage = convert_to_percentage(v_value).round(2)
 
-        v_data = df.get("Value")
-        calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
-        nearest_value = np.array([np.min(calc)])
+        # v_data = df.get("Value")
+        # calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
+        # nearest_value = np.array([np.min(calc)])
 
-        indices = np.array(np.where(calc == nearest_value)[1])
+        # indices = np.array(np.where(calc == nearest_value)[1])
 
-        if indices.size > 0:
-            brand_index = indices[0]
-            brand = df["brand"].iloc[brand_index]
-            st.text(f"Brand: {brand}")
+        # if indices.size > 0:
+        # brand_index = indices[0]
+        # brand = df["brand"].iloc[brand_index]
+        # st.text(f"Brand: {brand}")
 
-            product_index = indices[0]
+        # product_index = indices[0]
 
-            st.text(f"Product: {df['product'].iloc[product_index]}")
+        # st.text(f"Product: {df['product'].iloc[product_index]}")
 
-            hex_code = df["hex"].iloc[product_index]
-            st.text(f"Hex: {hex_code}")
+        hex_code = df["hex"].iloc[product_index]
+        st.text(f"Hex: {hex_code}")
 
-            desc = df["imgAlt"].iloc[product_index]
-            st.text(f"Description: {desc}")
+        desc = df["imgAlt"].iloc[product_index]
+        st.text(f"Description: {desc}")
 
-            link = df["url"].iloc[product_index]
-            link = link.split(",")[0]
-            st.markdown(f"Link to [Product]({link})")
+        link = df["url"].iloc[product_index]
+        link = link.split(",")[0]
+        st.markdown(f"Link to [Product]({link})")
 
-            url = df["imgSrc"].iloc[product_index]
-            img = fetch_image(url)
-            st.image(img, channels="BGR", width=60)
-        else:
-            st.text("Brand or product not found")
+        url = df["imgSrc"].iloc[product_index]
+        img = fetch_image(url)
+        st.image(img, channels="BGR", width=60)
+        # else:
+        #     st.text("Brand or product not found")
 
 
 def fetch_image(url):
