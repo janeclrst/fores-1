@@ -4,18 +4,20 @@ import cv2
 import pandas as pd
 import requests
 import pytz
-import time
 from PIL import Image
 from io import BytesIO
 from datetime import datetime
 from streamlit_cropper import st_cropper
-from streamlit_drawable_canvas import st_canvas
 
 st.set_option("deprecation.showfileUploaderEncoding", False)
 
-# read the pickle file
-model = pd.read_pickle("models/knn_fitzpatrick_vmean.pkl")
+model_product = pd.read_pickle("models/knn_fitzpatrick_vmean_product.pkl")
+model_phototype = pd.read_pickle("models/knn_fitzpatrick_vmean_phototype.pkl")
+
 df = pd.read_csv("datasets/foundation/maybelline_new.csv")
+df_image = pd.read_csv(
+    "datasets/fitzpatrick/merged_data_with_foundation_recommendation.csv"
+)
 format_file = ["png", "jpg", "jpeg"]
 
 
@@ -35,6 +37,14 @@ def process_image(
     col_left, col_right = st.columns(2)
 
     # filtered_df = query_selected_brand(selected_brand)
+    model_product.fit(
+        df_image["Value"].values.reshape(-1, 1),
+        df_image["product"].values.reshape(-1, 1),
+    )
+    model_phototype.fit(
+        df_image["Value"].values.reshape(-1, 1),
+        df_image["phototype"].values.reshape(-1, 1),
+    )
 
     with col_left:
         img = Image.open(img_src)
@@ -72,10 +82,18 @@ def process_image(
 
         new_data = np.array(hsv_mean)
         v_value = new_data[0][2]
-        prediction = model.predict(v_value.reshape(1, -1))
-        st.text(f"Phototype prediction: {prediction[0]}")
 
-        v_percentage = convert_to_percentage(v_value).round(2)
+        # predict the product and phototype using respective model from v_value
+        # fit_product = model_product.kneighbors(v_value.reshape(1, -1))[1][0]
+        # fit_phototype = model_phototype.kneighbors(v_value.reshape(1, -1))[1][0]
+
+        prediction_product = model_product.predict(v_value.reshape(1, -1))
+        prediction_phototype = model_phototype.predict(v_value.reshape(1, -1))
+
+        st.text(f"Phototype prediction: {prediction_phototype[0]}")
+        st.text(f"Product prediction: {prediction_product[0]}")
+
+        # v_percentage = convert_to_percentage(v_value).round(2)
 
         # v_data = df.get("Value")
         # calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
@@ -92,19 +110,23 @@ def process_image(
 
         # st.text(f"Product: {df['product'].iloc[product_index]}")
 
-        hex_code = df["hex"].iloc[product_index]
-        st.text(f"Hex: {hex_code}")
+        # retrieve the hex code based on the product prediction from df
+        # hex_code = df["hex"].iloc[prediction_product[0]]
+        # st.text(f"Hex: {hex_code}")
 
-        desc = df["imgAlt"].iloc[product_index]
-        st.text(f"Description: {desc}")
+        # hex_code = df["hex"].iloc[product_index]
+        # st.text(f"Hex: {hex_code}")
 
-        link = df["url"].iloc[product_index]
-        link = link.split(",")[0]
-        st.markdown(f"Link to [Product]({link})")
+        # desc = df["imgAlt"].iloc[product_index]
+        # st.text(f"Description: {desc}")
 
-        url = df["imgSrc"].iloc[product_index]
-        img = fetch_image(url)
-        st.image(img, channels="BGR", width=60)
+        # link = df["url"].iloc[product_index]
+        # link = link.split(",")[0]
+        # st.markdown(f"Link to [Product]({link})")
+
+        # url = df["imgSrc"].iloc[product_index]
+        # img = fetch_image(url)
+        # st.image(img, channels="BGR", width=60)
         # else:
         #     st.text("Brand or product not found")
 
