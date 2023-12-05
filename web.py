@@ -14,9 +14,9 @@ st.set_option("deprecation.showfileUploaderEncoding", False)
 model_product = pd.read_pickle("models/knn_fitzpatrick_vmean_product.pkl")
 model_phototype = pd.read_pickle("models/knn_fitzpatrick_vmean_phototype.pkl")
 
-df = pd.read_csv("datasets/foundation/maybelline_new.csv")
+df = pd.read_csv("datasets/foundation/w3ll_people.csv")
 df_image = pd.read_csv(
-    "datasets/fitzpatrick/merged_data_with_foundation_recommendation.csv"
+    "datasets/fitzpatrick/fitzpatrick_with_recommendation.csv"
 )
 format_file = ["png", "jpg", "jpeg"]
 
@@ -90,7 +90,7 @@ def process_image(
         prediction_product = model_product.predict(v_value.reshape(1, -1))
         prediction_phototype = model_phototype.predict(v_value.reshape(1, -1))
 
-        st.text(f"Phototype prediction: {prediction_phototype[0]}")
+        # st.text(f"Phototype prediction: {prediction_phototype[0]}")
         st.text(f"Product prediction: {prediction_product[0]}")
 
         # v_percentage = convert_to_percentage(v_value).round(2)
