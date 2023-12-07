@@ -162,7 +162,7 @@ realtime_update = st.sidebar.checkbox(
 with st.sidebar.expander("Crop Utilities"):
     box_color = st.color_picker(
         label="Box Color",
-        value="#0000FF",
+        value="#0EFF00",
     )
     aspect_choice = st.radio(
         label="Aspect Ratio",
