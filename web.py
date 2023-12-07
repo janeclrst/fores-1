@@ -31,13 +31,19 @@ def process_image(
 ):
     col_left, col_right = st.columns(2)
 
+    X_features = df_image[["hsv_mean_h", "hsv_mean_s", "hsv_mean_v"]].values.reshape(
+        -1, 3
+    )
+    y_product = df_image["product"].values.reshape(-1, 1)
+    y_phototype = df_image["phototype"].values.reshape(-1, 1)
+
     model_product.fit(
-        df_image["Value"].values.reshape(-1, 1),
-        df_image["product"].values.reshape(-1, 1),
+        X_features,
+        y_product
     )
     model_phototype.fit(
-        df_image["Value"].values.reshape(-1, 1),
-        df_image["phototype"].values.reshape(-1, 1),
+        X_features,
+        y_phototype
     )
 
     with col_left:
@@ -69,7 +75,7 @@ def process_image(
         s_value = new_data[0][1]
         v_value = new_data[0][2]
 
-        features = np.array([h_value, s_value, v_value]).reshape(1, -1).T
+        features = np.array([h_value, s_value, v_value]).reshape(1, -1)
         st.text(f"Features: {features}")
 
         prediction_product = model_product.predict(features)
