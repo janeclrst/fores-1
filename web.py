@@ -60,7 +60,7 @@ def process_image(
         st.markdown(f"Photo taken: _{current_time}_")
 
     with col_right:
-        st.image(img_src, use_column_width=True)
+        st.image(cropped_image, use_column_width=True)
         cropped_image = np.array(cropped_image)
         hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
