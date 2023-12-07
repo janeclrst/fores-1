@@ -28,13 +28,9 @@ def process_image(
     realtime_update=True,
     box_color="#0000FF",
     aspect_ratio="1:1",
-    # drawing_mode="freedraw",
-    # stroke_width=1,
-    # stroke_color="#FFFFFF",
 ):
     col_left, col_right = st.columns(2)
 
-    # filtered_df = query_selected_brand(selected_brand)
     model_product.fit(
         df_image["Value"].values.reshape(-1, 1),
         df_image["product"].values.reshape(-1, 1),
@@ -64,69 +60,36 @@ def process_image(
         st.markdown(f"Photo taken: _{current_time}_")
 
     with col_right:
-        # st_canvas(
-        #     background_image=cropped_image,
-        #     key="canvas",
-        #     update_streamlit=realtime_update,
-        #     drawing_mode=drawing_mode,
-        #     height=img.height,
-        #     width=img.width,
-        #     stroke_color=stroke_color,
-        #     stroke_width=stroke_width,
-        # )
         st.image(img_src, use_column_width=True)
         cropped_image = np.array(cropped_image)
         hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
         new_data = np.array(hsv_mean)
+        h_value = new_data[0][0]
+        s_value = new_data[0][1]
         v_value = new_data[0][2]
 
-        # predict the product and phototype using respective model from v_value
-        # fit_product = model_product.kneighbors(v_value.reshape(1, -1))[1][0]
-        # fit_phototype = model_phototype.kneighbors(v_value.reshape(1, -1))[1][0]
+        features = np.array([h_value, s_value, v_value]).reshape(1, -1).T
+        st.text(f"Features: {features}")
 
-        prediction_product = model_product.predict(v_value.reshape(1, -1))
-        prediction_phototype = model_phototype.predict(v_value.reshape(1, -1))
+        prediction_product = model_product.predict(features)
+        prediction_phototype = model_phototype.predict(features)
 
         st.text(f"Phototype prediction: {prediction_phototype[0]}")
         st.text(f"Product prediction: {prediction_product[0]}")
 
-        # v_percentage = convert_to_percentage(v_value).round(2)
+        product_index = df[df["imgAlt"] == prediction_product[0]].index[0]
 
-        # v_data = df.get("Value")
-        # calc = np.array([np.round(np.abs(v_percentage - v_data), 2)])
-        # nearest_value = np.array([np.min(calc)])
+        product_hex = df["hex"].iloc[product_index]
+        st.text(f"Hex: {product_hex}")
 
-        # indices = np.array(np.where(calc == nearest_value)[1])
+        link = df["url"].iloc[product_index]
+        link = link.split(",")[0]
+        st.markdown(f"Link to [Product]({link})")
 
-        # if indices.size > 0:
-        # brand_index = indices[0]
-        # brand = df["brand"].iloc[brand_index]
-        # st.text(f"Brand: {brand}")
-
-        # product_index = indices[0]
-
-        # st.text(f"Product: {df['product'].iloc[product_index]}")
-
-        # retrieve the hex code based on the product prediction from df
-        # hex_code = df["hex"].iloc[prediction_product[0]]
-        # st.text(f"Hex: {hex_code}")
-
-        # hex_code = df["hex"].iloc[product_index]
-        # st.text(f"Hex: {hex_code}")
-
-        # desc = df["imgAlt"].iloc[product_index]
-        # st.text(f"Description: {desc}")
-
-        # link = df["url"].iloc[product_index]
-        # link = link.split(",")[0]
-        # st.markdown(f"Link to [Product]({link})")
-
-        # url = df["imgSrc"].iloc[product_index]
-        # img = fetch_image(url)
-        # st.image(img, channels="BGR", width=60)
-        # else:
-        #     st.text("Brand or product not found")
+        url = df["imgSrc"].iloc[product_index]
+        img = fetch_image(url)
+        st.image(img, channels="BGR", width=60)
 
 
 def fetch_image(url):
