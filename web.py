@@ -154,15 +154,6 @@ else:
 unique_brands = df["brand"].unique().tolist()
 unique_brands.insert(0, "All brand")
 
-# selected_brand = st.selectbox(
-#     label="Select Brand",
-#     options=unique_brands,
-#     index=0,
-#     key="Brand Selectbox",
-#     disabled=mode is None,
-#     help="Select a brand to filter the products",
-# )
-
 realtime_update = st.sidebar.checkbox(
     label="Update in Real Time",
     value=True,
@@ -187,23 +178,6 @@ with st.sidebar.expander("Crop Utilities"):
     }
     aspect_ratio = aspect_dict[aspect_choice]
 
-# with st.sidebar.expander("Draw Utilities"):
-#     stroke_width = st.slider(
-#         label="Stroke Width",
-#         min_value=1,
-#         max_value=10,
-#         value=1,
-#         step=1,
-#     )
-#     stroke_color = st.color_picker(
-#         label="Stroke Color",
-#         value="#000000",
-#     )
-#     drawing_mode = st.selectbox(
-#         label="Drawing Tool",
-#         options=["freedraw", "line", "rect", "circle", "transform"],
-#     )
-
 st.sidebar.markdown(
     "Made by [Janice Claresta Lingga](https://github.com/janeclrst) 🐈",
 )
@@ -214,9 +188,6 @@ if options == "Camera" and mode is not None:
         realtime_update=realtime_update,
         box_color=box_color,
         aspect_ratio=aspect_ratio,
-        # drawing_mode=drawing_mode,
-        # stroke_width=stroke_width,
-        # stroke_color=stroke_color,
     )
 elif mode is not None:
     process_image(
@@ -224,7 +195,4 @@ elif mode is not None:
         realtime_update=realtime_update,
         box_color=box_color,
         aspect_ratio=aspect_ratio,
-        # drawing_mode=drawing_mode,
-        # stroke_width=stroke_width,
-        # stroke_color=stroke_color,
     )
