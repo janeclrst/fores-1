@@ -11,8 +11,8 @@ from streamlit_cropper import st_cropper
 
 st.set_option("deprecation.showfileUploaderEncoding", False)
 
-model_product = pd.read_pickle("models/knn_fitzpatrick_vmean_product.pkl")
-model_phototype = pd.read_pickle("models/knn_fitzpatrick_vmean_phototype.pkl")
+model_product = pd.read_pickle("models/knn-product.pkl")
+model_phototype = pd.read_pickle("models/knn-phototype.pkl")
 
 df = pd.read_csv("datasets/foundation/w3ll_people.csv")
 df_image = pd.read_csv("datasets/fitzpatrick/fitzpatrick_with_recommendation.csv")
