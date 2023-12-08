@@ -107,20 +107,18 @@ def process_image(
         st.text(f"Phototype: {phototype_label[prediction_phototype[0]]}")
         st.text(f"Recommended Product: {product_label[prediction_product[0]]}")
 
-        # st.text(f"Product probability: {model_product.predict_proba(features)}")
+        product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[0]
 
-        # product_index = df[df["imgAlt"] == prediction_product[0]].index[0]
+        product_hex = df["hex"].iloc[product_index]
+        st.text(f"Hex: {product_hex}")
 
-        # product_hex = df["hex"].iloc[product_index]
-        # st.text(f"Hex: {product_hex}")
+        link = df["url"].iloc[product_index]
+        link = link.split(",")[0]
+        st.markdown(f"Link to [Product]({link})")
 
-        # link = df["url"].iloc[product_index]
-        # link = link.split(",")[0]
-        # st.markdown(f"Link to [Product]({link})")
-
-        # url = df["imgSrc"].iloc[product_index]
-        # img = fetch_image(url)
-        # st.image(img, channels="BGR", width=60)
+        url = df["imgSrc"].iloc[product_index]
+        img = fetch_image(url)
+        st.image(img, channels="BGR", width=60)
 
 
 def fetch_image(url):
@@ -134,21 +132,6 @@ def fetch_image(url):
     except Exception as e:
         print(f"Error: {e}")
         return None
-
-
-def zoom_center(img, zoom_factor=2):
-    x_width = img.shape[1]
-    y_height = img.shape[0]
-
-    x1 = int(0.5 * x_width * (1 - 1 / zoom_factor))
-    y1 = int(0.5 * y_height * (1 - 1 / zoom_factor))
-
-    x2 = int(x_width - 0.5 * x_width * (1 - 1 / zoom_factor))
-    y2 = int(y_height - 0.5 * y_height * (1 - 1 / zoom_factor))
-
-    # Crop then scale
-    cropped_image = img[y1:y2, x1:x2]
-    return cv2.resize(cropped_image, None, fx=zoom_factor, fy=zoom_factor)
 
 
 def extract_hsv_mean(img):
