@@ -25,16 +25,10 @@ product_label = {
     2: "Fair Pink (fair skin w/ neutral or pink undertones",
     3: "Medium Golden (medium skin w/ golden undertones)",
     4: "Medium Neutral (medium skin w/ neutral undertones)",
-    5: "Tan (tan skin w/ neutral undertones)"
+    5: "Tan (tan skin w/ neutral undertones)",
 }
 
-phototype_label = {
-    0: "I & II",
-    1: "III",
-    2: "IV",
-    3: "V",
-    4: "VI"
-}
+phototype_label = {0: "I & II", 1: "III", 2: "IV", 3: "V", 4: "VI"}
 
 
 def query_selected_brand(brand):
@@ -94,9 +88,9 @@ def process_image(
         v_value = new_data[0][2]
 
         features = np.array([h_value, s_value, v_value]).reshape(1, -1)
-        
+
         st.text(f"Features: {h_value}, {s_value}, {v_value}")
-        
+
         if st.button("Copy Features"):
             pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
             st.toast("Copied!")
@@ -107,7 +101,19 @@ def process_image(
         st.text(f"Phototype: {phototype_label[prediction_phototype[0]]}")
         st.text(f"Recommended Product: {product_label[prediction_product[0]]}")
 
-        product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[0]
+        confidence_product = model_product.predict_proba(features)
+        confidence_phototype = model_phototype.predict_proba(features)
+
+        st.text(
+            f"Confidence Phototype: {confidence_phototype[0][prediction_phototype[0]] * 100:.2f}%"
+        )
+        st.text(
+            f"Confidence Product: {confidence_product[0][prediction_product[0]] * 100:.2f}%"
+        )
+
+        product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[
+            0
+        ]
 
         product_hex = df["hex"].iloc[product_index]
         st.text(f"Hex: {product_hex}")
