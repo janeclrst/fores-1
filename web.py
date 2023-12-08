@@ -77,8 +77,10 @@ def process_image(
         current_time = datetime.now(id_tz).strftime("%b %d, %Y %H:%M:%S")
         st.markdown(f"Photo taken: _{current_time}_")
 
-    with col_right:
         st.image(cropped_image, use_column_width=True)
+        st.caption("Cropped Image")
+
+    with col_right:
         cropped_image = np.array(cropped_image)
         hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
@@ -89,26 +91,39 @@ def process_image(
 
         features = np.array([h_value, s_value, v_value]).reshape(1, -1)
 
-        st.text(f"Features: {h_value}, {s_value}, {v_value}")
+        st.table(
+            pd.DataFrame(
+                {
+                    "H": [h_value],
+                    "S": [s_value],
+                    "V": [v_value],
+                },
+                index=["Features"],
+            )
+        )
 
         if st.button("Copy Features"):
             pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
-            st.toast("Copied!")
+            st.toast("Copied!", icon="✅")
 
         prediction_product = model_product.predict(features)
         prediction_phototype = model_phototype.predict(features)
 
-        st.text(f"Phototype: {phototype_label[prediction_phototype[0]]}")
-        st.text(f"Recommended Product: {product_label[prediction_product[0]]}")
-
         confidence_product = model_product.predict_proba(features)
         confidence_phototype = model_phototype.predict_proba(features)
 
-        st.text(
-            f"Confidence Phototype: {confidence_phototype[0][prediction_phototype[0]] * 100:.2f}%"
+        st.markdown(f"#### Phototype:")
+        st.markdown(f"###### {phototype_label[prediction_phototype[0]]}")
+        st.caption(
+            f"Confidence {confidence_phototype[0][prediction_phototype[0]] * 100:.2f}%"
         )
-        st.text(
-            f"Confidence Product: {confidence_product[0][prediction_product[0]] * 100:.2f}%"
+
+        st.divider()
+
+        st.markdown(f"#### Recommended Product:")
+        st.markdown(f"###### {product_label[prediction_product[0]]}")
+        st.caption(
+            f"Confidence: {confidence_product[0][prediction_product[0]] * 100:.2f}%"
         )
 
         product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[
