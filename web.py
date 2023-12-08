@@ -4,6 +4,7 @@ import cv2
 import pandas as pd
 import requests
 import pytz
+import pyperclip
 from PIL import Image
 from io import BytesIO
 from datetime import datetime
@@ -11,7 +12,7 @@ from streamlit_cropper import st_cropper
 
 st.set_option("deprecation.showfileUploaderEncoding", False)
 
-model_product = pd.read_pickle("models/knn-product.pkl")
+model_product = pd.read_pickle("models/knn-product-smote.pkl")
 model_phototype = pd.read_pickle("models/knn-phototype.pkl")
 
 df = pd.read_csv("datasets/foundation/w3ll_people.csv")
@@ -76,13 +77,19 @@ def process_image(
         v_value = new_data[0][2]
 
         features = np.array([h_value, s_value, v_value]).reshape(1, -1)
-        st.text(f"Features: {features}")
+        
+        st.text(f"Features: {h_value}, {s_value}, {v_value}")
+        
+        if st.button("Copy Features"):
+            pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
+            st.toast("Copied!")
 
         prediction_product = model_product.predict(features)
         prediction_phototype = model_phototype.predict(features)
 
         st.text(f"Phototype prediction: {prediction_phototype[0]}")
         st.text(f"Product prediction: {prediction_product[0]}")
+        st.text(f"Product probability: {model_product.predict_proba(features)}")
 
         product_index = df[df["imgAlt"] == prediction_product[0]].index[0]
 
