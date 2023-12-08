@@ -19,6 +19,23 @@ df = pd.read_csv("datasets/foundation/w3ll_people.csv")
 df_image = pd.read_csv("datasets/fitzpatrick/fitzpatrick_with_recommendation.csv")
 format_file = ["png", "jpg", "jpeg"]
 
+product_label = {
+    0: "Dark Neutral (medium dark skin w/ neutral undertones)",
+    1: "Fair Golden (fair skin w/ neutral or golden undertones)",
+    2: "Fair Pink (fair skin w/ neutral or pink undertones",
+    3: "Medium Golden (medium skin w/ golden undertones)",
+    4: "Medium Neutral (medium skin w/ neutral undertones)",
+    5: "Tan (tan skin w/ neutral undertones)"
+}
+
+phototype_label = {
+    0: "I & II",
+    1: "III",
+    2: "IV",
+    3: "V",
+    4: "VI"
+}
+
 
 def query_selected_brand(brand):
     return df if brand == "All brand" else df[df["brand"] == brand]
@@ -32,20 +49,20 @@ def process_image(
 ):
     col_left, col_right = st.columns(2)
 
-    X_features = df_image[["hsv_mean_h", "hsv_mean_s", "hsv_mean_v"]].values.reshape(
-        -1, 3
-    )
-    y_product = df_image["product"].values.reshape(-1, 1)
-    y_phototype = df_image["phototype"].values.reshape(-1, 1)
+    # X_features = df_image[["hsv_mean_h", "hsv_mean_s", "hsv_mean_v"]].values.reshape(
+    #     -1, 3
+    # )
+    # y_product = df_image["product"].values.reshape(-1, 1)
+    # y_phototype = df_image["phototype"].values.reshape(-1, 1)
 
-    model_product.fit(
-        X_features,
-        y_product
-    )
-    model_phototype.fit(
-        X_features,
-        y_phototype
-    )
+    # model_product.fit(
+    #     X_features,
+    #     y_product
+    # )
+    # model_phototype.fit(
+    #     X_features,
+    #     y_phototype
+    # )
 
     with col_left:
         img = Image.open(img_src)
@@ -87,22 +104,23 @@ def process_image(
         prediction_product = model_product.predict(features)
         prediction_phototype = model_phototype.predict(features)
 
-        st.text(f"Phototype prediction: {prediction_phototype[0]}")
-        st.text(f"Product prediction: {prediction_product[0]}")
-        st.text(f"Product probability: {model_product.predict_proba(features)}")
+        st.text(f"Phototype: {phototype_label[prediction_phototype[0]]}")
+        st.text(f"Recommended Product: {product_label[prediction_product[0]]}")
 
-        product_index = df[df["imgAlt"] == prediction_product[0]].index[0]
+        # st.text(f"Product probability: {model_product.predict_proba(features)}")
 
-        product_hex = df["hex"].iloc[product_index]
-        st.text(f"Hex: {product_hex}")
+        # product_index = df[df["imgAlt"] == prediction_product[0]].index[0]
 
-        link = df["url"].iloc[product_index]
-        link = link.split(",")[0]
-        st.markdown(f"Link to [Product]({link})")
+        # product_hex = df["hex"].iloc[product_index]
+        # st.text(f"Hex: {product_hex}")
 
-        url = df["imgSrc"].iloc[product_index]
-        img = fetch_image(url)
-        st.image(img, channels="BGR", width=60)
+        # link = df["url"].iloc[product_index]
+        # link = link.split(",")[0]
+        # st.markdown(f"Link to [Product]({link})")
+
+        # url = df["imgSrc"].iloc[product_index]
+        # img = fetch_image(url)
+        # st.image(img, channels="BGR", width=60)
 
 
 def fetch_image(url):
