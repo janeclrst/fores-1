@@ -40,7 +40,6 @@ mypy==1.7.0
 mypy-extensions==1.0.0
 nest-asyncio==1.5.8
 numpy==1.26.2
-cv-python==4.8.1.78
 opencv-python-headless==4.8.1.78
 packaging==23.2
 pandas==2.1.3
