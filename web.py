@@ -16,11 +16,6 @@ st.set_page_config(
     layout="wide",
     page_icon="💅",
     initial_sidebar_state="expanded",
-    menu_items={
-        "Get Help": "https://www.fores.com",
-        "Report a bug": "https://www.fores.com",
-        "About": "https://www.fores.com",
-    },
 )
 
 model_product = pd.read_pickle("models/knn-product-smote.pkl")
