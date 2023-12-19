@@ -91,20 +91,13 @@ def process_image(
     prediction_product = model_product.predict(features)
     prediction_phototype = model_phototype.predict(features)
 
-    confidence_product = model_product.predict_proba(features)
-    confidence_phototype = model_phototype.predict_proba(features)
-
     st.markdown(f"#### Phototype:")
     st.markdown(f"###### {phototype_label[prediction_phototype[0]]}")
-    st.caption(
-        f"Confidence {confidence_phototype[0][prediction_phototype[0]] * 100:.2f}%"
-    )
 
     st.divider()
 
     st.markdown(f"#### Recommended Product:")
     st.markdown(f"###### {product_label[prediction_product[0]]}")
-    st.caption(f"Confidence: {confidence_product[0][prediction_product[0]] * 100:.2f}%")
 
     product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[0]
 
