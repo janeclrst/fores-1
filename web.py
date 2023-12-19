@@ -42,24 +42,6 @@ def process_image(
     aspect_ratio="1:1",
     degree=0,
 ):
-    col_left, col_right = st.columns(2)
-
-    # X_features = df_image[["hsv_mean_h", "hsv_mean_s", "hsv_mean_v"]].values.reshape(
-    #     -1, 3
-    # )
-    # y_product = df_image["product"].values.reshape(-1, 1)
-    # y_phototype = df_image["phototype"].values.reshape(-1, 1)
-
-    # model_product.fit(
-    #     X_features,
-    #     y_product
-    # )
-    # model_phototype.fit(
-    #     X_features,
-    #     y_phototype
-    # )
-
-    # with col_left:
     img = Image.open(img_src).rotate(degree)
 
     if not realtime_update:
@@ -81,7 +63,6 @@ def process_image(
     st.image(cropped_image, use_column_width=True)
     st.caption("Cropped Image")
 
-    # with col_right:
     cropped_image = np.array(cropped_image)
     hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
@@ -182,9 +163,6 @@ else:
         label="Upload your photo!",
         type=format_file,
     )
-
-unique_brands = df["brand"].unique().tolist()
-unique_brands.insert(0, "All brand")
 
 realtime_update = st.sidebar.checkbox(
     label="Update in Real Time",
