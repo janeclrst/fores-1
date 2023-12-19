@@ -40,6 +40,7 @@ def process_image(
     realtime_update=True,
     box_color="#0000FF",
     aspect_ratio="1:1",
+    degree=0,
 ):
     col_left, col_right = st.columns(2)
 
@@ -58,88 +59,84 @@ def process_image(
     #     y_phototype
     # )
 
-    with col_left:
-        img = Image.open(img_src)
+    # with col_left:
+    img = Image.open(img_src).rotate(degree)
 
-        if not realtime_update:
-            st.write("Double tap on the image to save crop")
+    if not realtime_update:
+        st.write("Double tap on the image to save crop")
 
-        cropped_image = st_cropper(
-            img,
-            key="cropper",
-            realtime_update=realtime_update,
-            box_color=box_color,
-            aspect_ratio=aspect_ratio,
-            stroke_width=4,
+    cropped_image = st_cropper(
+        img,
+        key="cropper",
+        realtime_update=realtime_update,
+        box_color=box_color,
+        aspect_ratio=aspect_ratio,
+        stroke_width=4,
+    )
+
+    id_tz = pytz.timezone("Asia/Jakarta")
+    current_time = datetime.now(id_tz).strftime("%b %d, %Y %H:%M:%S")
+    st.markdown(f"Photo taken: _{current_time}_")
+
+    st.image(cropped_image, use_column_width=True)
+    st.caption("Cropped Image")
+
+    # with col_right:
+    cropped_image = np.array(cropped_image)
+    hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
+
+    new_data = np.array(hsv_mean)
+    h_value = new_data[0][0]
+    s_value = new_data[0][1]
+    v_value = new_data[0][2]
+
+    features = np.array([h_value, s_value, v_value]).reshape(1, -1)
+
+    st.table(
+        pd.DataFrame(
+            {
+                "H": [h_value],
+                "S": [s_value],
+                "V": [v_value],
+            },
+            index=["Features"],
         )
+    )
 
-        id_tz = pytz.timezone("Asia/Jakarta")
-        current_time = datetime.now(id_tz).strftime("%b %d, %Y %H:%M:%S")
-        st.markdown(f"Photo taken: _{current_time}_")
+    if st.button("Copy Features"):
+        pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
+        st.toast("Copied!", icon="✅")
 
-        st.image(cropped_image, use_column_width=True)
-        st.caption("Cropped Image")
+    prediction_product = model_product.predict(features)
+    prediction_phototype = model_phototype.predict(features)
 
-    with col_right:
-        cropped_image = np.array(cropped_image)
-        hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
+    confidence_product = model_product.predict_proba(features)
+    confidence_phototype = model_phototype.predict_proba(features)
 
-        new_data = np.array(hsv_mean)
-        h_value = new_data[0][0]
-        s_value = new_data[0][1]
-        v_value = new_data[0][2]
+    st.markdown(f"#### Phototype:")
+    st.markdown(f"###### {phototype_label[prediction_phototype[0]]}")
+    st.caption(
+        f"Confidence {confidence_phototype[0][prediction_phototype[0]] * 100:.2f}%"
+    )
 
-        features = np.array([h_value, s_value, v_value]).reshape(1, -1)
+    st.divider()
 
-        st.table(
-            pd.DataFrame(
-                {
-                    "H": [h_value],
-                    "S": [s_value],
-                    "V": [v_value],
-                },
-                index=["Features"],
-            )
-        )
+    st.markdown(f"#### Recommended Product:")
+    st.markdown(f"###### {product_label[prediction_product[0]]}")
+    st.caption(f"Confidence: {confidence_product[0][prediction_product[0]] * 100:.2f}%")
 
-        if st.button("Copy Features"):
-            pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
-            st.toast("Copied!", icon="✅")
+    product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[0]
 
-        prediction_product = model_product.predict(features)
-        prediction_phototype = model_phototype.predict(features)
+    product_hex = df["hex"].iloc[product_index]
+    st.text(f"Hex: {product_hex}")
 
-        confidence_product = model_product.predict_proba(features)
-        confidence_phototype = model_phototype.predict_proba(features)
+    link = df["url"].iloc[product_index]
+    link = link.split(",")[0]
+    st.markdown(f"Link to [Product]({link})")
 
-        st.markdown(f"#### Phototype:")
-        st.markdown(f"###### {phototype_label[prediction_phototype[0]]}")
-        st.caption(
-            f"Confidence {confidence_phototype[0][prediction_phototype[0]] * 100:.2f}%"
-        )
-
-        st.divider()
-
-        st.markdown(f"#### Recommended Product:")
-        st.markdown(f"###### {product_label[prediction_product[0]]}")
-        st.caption(
-            f"Confidence: {confidence_product[0][prediction_product[0]] * 100:.2f}%"
-        )
-
-        product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[
-            0
-        ]
-
-        product_hex = df["hex"].iloc[product_index]
-        st.text(f"Hex: {product_hex}")
-
-        link = df["url"].iloc[product_index]
-        link = link.split(",")[0]
-        st.markdown(f"Link to [Product]({link})")
-
-        url = df["imgSrc"].iloc[product_index]
-        img = fetch_image(url)
-        st.image(img, channels="BGR", width=60)
+    url = df["imgSrc"].iloc[product_index]
+    img = fetch_image(url)
+    st.image(img, channels="BGR", width=60)
 
 
 def fetch_image(url):
@@ -194,6 +191,13 @@ realtime_update = st.sidebar.checkbox(
     value=True,
 )
 
+rotation = st.sidebar.slider(
+    label="Degree",
+    min_value=0,
+    max_value=360,
+    step=10,
+)
+
 with st.sidebar.expander("Crop Utilities"):
     box_color = st.color_picker(
         label="Box Color",
@@ -223,6 +227,7 @@ if options == "Camera" and mode is not None:
         realtime_update=realtime_update,
         box_color=box_color,
         aspect_ratio=aspect_ratio,
+        degree=rotation,
     )
 elif mode is not None:
     process_image(
@@ -230,4 +235,5 @@ elif mode is not None:
         realtime_update=realtime_update,
         box_color=box_color,
         aspect_ratio=aspect_ratio,
+        degree=rotation,
     )
