@@ -151,11 +151,15 @@ options = st.sidebar.radio(
 
 if options == "Camera":
     mode = st.sidebar.camera_input(label="Take a photo")
+    if mode:
+        st.toast("Photo taken!", icon="✅")
 else:
     mode = st.sidebar.file_uploader(
         label="Upload your photo!",
         type=format_file,
     )
+    if mode:
+        st.toast("Image uploaded!", icon="✅")
 
 realtime_update = st.sidebar.checkbox(
     label="Update in Real Time",
