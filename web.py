@@ -113,7 +113,7 @@ def process_image(
 
     link = df["url"].iloc[product_index]
     link = link.split(",")[0]
-    st.markdown(f"Link to [Product]({link})")
+    st.link_button(label="Link to Product", url=link)
 
     url = df["imgSrc"].iloc[product_index]
     img = fetch_image(url)
