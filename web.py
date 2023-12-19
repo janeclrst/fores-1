@@ -11,6 +11,17 @@ from datetime import datetime
 from streamlit_cropper import st_cropper
 
 st.set_option("deprecation.showfileUploaderEncoding", False)
+st.set_page_config(
+    page_title="Fores",
+    layout="wide",
+    page_icon="💅",
+    initial_sidebar_state="expanded",
+    menu_items={
+        "Get Help": "https://www.fores.com",
+        "Report a bug": "https://www.fores.com",
+        "About": "https://www.fores.com",
+    },
+)
 
 model_product = pd.read_pickle("models/knn-product-smote.pkl")
 model_phototype = pd.read_pickle("models/knn-phototype.pkl")
@@ -42,75 +53,80 @@ def process_image(
     aspect_ratio="1:1",
     degree=0,
 ):
-    img = Image.open(img_src).rotate(degree)
+    col_left, col_right = st.columns(2)
+    with col_left:
+        img = Image.open(img_src).rotate(degree)
 
-    if not realtime_update:
-        st.write("Double tap on the image to save crop")
+        if not realtime_update:
+            st.write("Double tap on the image to save crop")
 
-    cropped_image = st_cropper(
-        img,
-        key="cropper",
-        realtime_update=realtime_update,
-        box_color=box_color,
-        aspect_ratio=aspect_ratio,
-        stroke_width=4,
-    )
-
-    id_tz = pytz.timezone("Asia/Jakarta")
-    current_time = datetime.now(id_tz).strftime("%b %d, %Y %H:%M:%S")
-    st.markdown(f"Photo taken: _{current_time}_")
-
-    st.image(cropped_image, use_column_width=True)
-    st.caption("Cropped Image")
-
-    cropped_image = np.array(cropped_image)
-    hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
-
-    new_data = np.array(hsv_mean)
-    h_value = new_data[0][0]
-    s_value = new_data[0][1]
-    v_value = new_data[0][2]
-
-    features = np.array([h_value, s_value, v_value]).reshape(1, -1)
-
-    st.table(
-        pd.DataFrame(
-            {
-                "H": [h_value],
-                "S": [s_value],
-                "V": [v_value],
-            },
-            index=["Features"],
+        cropped_image = st_cropper(
+            img,
+            key="cropper",
+            realtime_update=realtime_update,
+            box_color=box_color,
+            aspect_ratio=aspect_ratio,
+            stroke_width=4,
         )
-    )
 
-    if st.button("Copy Features"):
-        pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
-        st.toast("Copied!", icon="✅")
+        id_tz = pytz.timezone("Asia/Jakarta")
+        current_time = datetime.now(id_tz).strftime("%b %d, %Y %H:%M:%S")
+        st.markdown(f"Photo taken: _{current_time}_")
 
-    prediction_product = model_product.predict(features)
-    prediction_phototype = model_phototype.predict(features)
+        st.image(cropped_image, use_column_width=True)
+        st.caption("Cropped Image")
 
-    st.markdown(f"#### Phototype:")
-    st.markdown(f"###### {phototype_label[prediction_phototype[0]]}")
+    with col_right:
+        cropped_image = np.array(cropped_image)
+        hsv_mean = extract_hsv_mean(cropped_image).reshape(1, -1)
 
-    st.divider()
+        new_data = np.array(hsv_mean)
+        h_value = new_data[0][0]
+        s_value = new_data[0][1]
+        v_value = new_data[0][2]
 
-    st.markdown(f"#### Recommended Product:")
-    st.markdown(f"###### {product_label[prediction_product[0]]}")
+        features = np.array([h_value, s_value, v_value]).reshape(1, -1)
 
-    product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[0]
+        st.table(
+            pd.DataFrame(
+                {
+                    "H": [h_value],
+                    "S": [s_value],
+                    "V": [v_value],
+                },
+                index=["Features"],
+            )
+        )
 
-    product_hex = df["hex"].iloc[product_index]
-    st.text(f"Hex: {product_hex}")
+        if st.button("Copy Features"):
+            pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
+            st.toast("Copied!", icon="✅")
 
-    link = df["url"].iloc[product_index]
-    link = link.split(",")[0]
-    st.link_button(label="Link to Product", url=link)
+        prediction_product = model_product.predict(features)
+        prediction_phototype = model_phototype.predict(features)
 
-    url = df["imgSrc"].iloc[product_index]
-    img = fetch_image(url)
-    st.image(img, channels="BGR", width=60)
+        st.markdown(f"#### Phototype:")
+        st.markdown(f"###### {phototype_label[prediction_phototype[0]]}")
+
+        st.divider()
+
+        st.markdown(f"#### Recommended Product:")
+        st.markdown(f"###### {product_label[prediction_product[0]]}")
+
+        product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[
+            0
+        ]
+
+        product_hex = df["hex"].iloc[product_index]
+        st.text(f"Hex: {product_hex}")
+
+        link = df["url"].iloc[product_index]
+        link = link.split(",")[0]
+        st.link_button(label="Link to Product", url=link)
+
+        url = df["imgSrc"].iloc[product_index]
+        img = fetch_image(url)
+        st.image(img, channels="BGR", width=60)
 
 
 def fetch_image(url):
