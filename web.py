@@ -93,9 +93,9 @@ def process_image(
             )
         )
 
-        if st.button("Copy Features"):
-            pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
-            st.toast("Copied!", icon="✅")
+        # if st.button("Copy Features"):
+        #     pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
+        #     st.toast("Copied!", icon="✅")
 
         prediction_product = model_product.predict(features)
         prediction_phototype = model_phototype.predict(features)
