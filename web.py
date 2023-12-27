@@ -119,9 +119,9 @@ def process_image(
         link = link.split(",")[0]
         st.link_button(label="Link to Product", url=link)
 
-        url = df["imgSrc"].iloc[product_index]
-        img = fetch_image(url)
-        st.image(img, channels="BGR", width=60)
+        # url = df["imgSrc"].iloc[product_index]
+        # img = fetch_image(url)
+        # st.image(img, channels="BGR", width=60)
 
 
 def fetch_image(url):
