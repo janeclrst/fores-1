@@ -112,12 +112,12 @@ def process_image(
             0
         ]
 
-        product_hex = df["hex"].iloc[product_index]
-        st.text(f"Hex: {product_hex}")
-
-        link = df["url"].iloc[product_index]
-        link = link.split(",")[0]
-        st.link_button(label="Link to Product", url=link)
+        # product_hex = df["hex"].iloc[product_index]
+        # st.text(f"Hex: {product_hex}")
+        #
+        # link = df["url"].iloc[product_index]
+        # link = link.split(",")[0]
+        # st.link_button(label="Link to Product", url=link)
 
         # url = df["imgSrc"].iloc[product_index]
         # img = fetch_image(url)
