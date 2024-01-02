@@ -68,7 +68,7 @@ def process_image(
         current_time = datetime.now(id_tz).strftime("%b %d, %Y %H:%M:%S")
         st.markdown(f"Photo taken: _{current_time}_")
 
-        st.image(cropped_image, use_column_width=True)
+        st.image(cropped_image, width=300)
         st.caption("Cropped Image")
 
     with col_right:
