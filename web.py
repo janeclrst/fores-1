@@ -53,7 +53,7 @@ def process_image(
         img = Image.open(img_src).rotate(degree)
 
         if not realtime_update:
-            st.write("Double tap on the image to save crop")
+            st.write("Double tap on the image to save and update crop")
 
         cropped_image = st_cropper(
             img,
