@@ -4,7 +4,6 @@ import cv2
 import pandas as pd
 import requests
 import pytz
-import pyperclip
 from PIL import Image
 from io import BytesIO
 from datetime import datetime
