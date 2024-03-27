@@ -92,10 +92,6 @@ def process_image(
             )
         )
 
-        # if st.button("Copy Features"):
-        #     pyperclip.copy(f"{h_value}, {s_value}, {v_value}")
-        #     st.toast("Copied!", icon="✅")
-
         prediction_product = model_product.predict(features)
         prediction_phototype = model_phototype.predict(features)
 
@@ -106,21 +102,6 @@ def process_image(
 
         st.markdown(f"#### Recommended Product:")
         st.markdown(f"###### {product_label[prediction_product[0]]}")
-
-        product_index = df[df["imgAlt"] == product_label[prediction_product[0]]].index[
-            0
-        ]
-
-        # product_hex = df["hex"].iloc[product_index]
-        # st.text(f"Hex: {product_hex}")
-        #
-        # link = df["url"].iloc[product_index]
-        # link = link.split(",")[0]
-        # st.link_button(label="Link to Product", url=link)
-
-        # url = df["imgSrc"].iloc[product_index]
-        # img = fetch_image(url)
-        # st.image(img, channels="BGR", width=60)
 
 
 def fetch_image(url):
