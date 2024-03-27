@@ -95,12 +95,12 @@ def process_image(
         prediction_product = model_product.predict(features)
         prediction_phototype = model_phototype.predict(features)
 
-        st.markdown(f"#### Phototype:")
+        st.markdown("#### Phototype:")
         st.markdown(f"###### {phototype_label[prediction_phototype[0]]}")
 
         st.divider()
 
-        st.markdown(f"#### Recommended Product:")
+        st.markdown("#### Recommended Product:")
         st.markdown(f"###### {product_label[prediction_product[0]]}")
 
 
